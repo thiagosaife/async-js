@@ -11,6 +11,21 @@ Vue.config.productionTip = false;
 Vue.use(BootstrapVue);
 Vue.use(BootstrapVueIcons);
 
+Vue.mixin({
+  methods: {
+    fixedDecimals(num) {
+      return `${num}`.substring(0, 2);
+    },
+    reduceArrayKeys(originalArray, keysToKeep) {
+      return originalArray.map((item) => keysToKeep
+        .reduce((acc, key) => {
+          acc[key] = item[key];
+          return acc;
+        }, {}));
+    },
+  },
+});
+
 new Vue({
   store,
   render: (h) => h(App),

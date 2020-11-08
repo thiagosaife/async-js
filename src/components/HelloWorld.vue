@@ -117,16 +117,6 @@ export default {
     };
   },
   methods: {
-    reduceArrayKeys(originalArray, keysToKeep) {
-      return originalArray.map((item) => keysToKeep
-        .reduce((acc, key) => {
-          acc[key] = item[key];
-          return acc;
-        }, {}));
-    },
-    fixedDecimals(num) {
-      return `${num}`.substring(0, 2);
-    },
     clearList(idx) {
       if (!this.cardsList[idx].items.length) return;
       this.cardsList[idx].items = [];
@@ -183,10 +173,7 @@ export default {
         });
     },
     getResults(error, res) {
-      if (error) {
-        console.log(error);
-        return;
-      }
+      if (error) return;
       const { idx } = res;
       const allCards = res.res;
       this.cardsList[idx].loading = false;
@@ -196,8 +183,8 @@ export default {
         'type',
       ];
       const reducedCards = this.reduceArrayKeys(allCards, keysToKeep);
-      console.log(callBack, reducedCards);
       this.cardsList[idx].items = reducedCards;
+      console.log(callBack, reducedCards);
     },
     promiseContructionApi(idx) {
       this.cardsList[idx].loading = true;
