@@ -123,6 +123,14 @@ export default {
       this.cardsList[idx].seconds = 0;
       this.cardsList[idx].miliseconds = 0;
     },
+    reduceCards(allCards) {
+      const keysToKeep = [
+        'artist',
+        'name',
+        'type',
+      ];
+      return this.reduceArrayKeys(allCards, keysToKeep);
+    },
     async asyncContructionApi(idx) {
       this.cardsList[idx].loading = true;
       const secInterval = setInterval(() => {
@@ -134,14 +142,7 @@ export default {
       try {
         const allCards = await getAllCards();
         this.cardsList[idx].loading = false;
-        const keysToKeep = [
-          'artist',
-          'name',
-          'type',
-        ];
-        const reducedCards = this.reduceArrayKeys(allCards, keysToKeep);
-        this.cardsList[idx].items = reducedCards;
-        console.log(async, reducedCards);
+        this.cardsList[idx].items = this.reduceCards(allCards);
         clearInterval(secInterval);
         clearInterval(miliInterval);
       } catch (err) {
@@ -177,14 +178,7 @@ export default {
       const { idx } = res;
       const allCards = res.res;
       this.cardsList[idx].loading = false;
-      const keysToKeep = [
-        'artist',
-        'name',
-        'type',
-      ];
-      const reducedCards = this.reduceArrayKeys(allCards, keysToKeep);
-      this.cardsList[idx].items = reducedCards;
-      console.log(callBack, reducedCards);
+      this.cardsList[idx].items = this.reduceCards(allCards);
     },
     promiseContructionApi(idx) {
       this.cardsList[idx].loading = true;
@@ -199,14 +193,7 @@ export default {
           .then((res) => {
             const allCards = res;
             this.cardsList[idx].loading = false;
-            const keysToKeep = [
-              'artist',
-              'name',
-              'type',
-            ];
-            const reducedCards = this.reduceArrayKeys(allCards, keysToKeep);
-            console.log(promise, reducedCards);
-            this.cardsList[idx].items = reducedCards;
+            this.cardsList[idx].items = this.reduceCards(allCards);
             clearInterval(secInterval);
             clearInterval(miliInterval);
             resolve(res);
