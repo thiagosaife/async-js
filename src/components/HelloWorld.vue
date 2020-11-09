@@ -77,9 +77,9 @@ export default {
   name: 'HelloWorld',
   created() {
     this.functionsList.push(
-      { fn: (idx) => this.asyncContructionApi(idx), label: async },
-      { fn: (idx) => this.callBackContructionApi(idx, this.getResults), label: callBack },
-      { fn: (idx) => this.promiseContructionApi(idx), label: promise },
+      { fn: (idx) => this.asyncContruction(idx), label: async },
+      { fn: (idx) => this.callBackContruction(idx, this.getResults), label: callBack },
+      { fn: (idx) => this.promiseContruction(idx), label: promise },
     );
   },
   data() {
@@ -124,14 +124,6 @@ export default {
       this.cardsList[idx].seconds = 0;
       this.cardsList[idx].miliseconds = 0;
     },
-    reduceCards(allCards) {
-      const keysToKeep = [
-        'artist',
-        'name',
-        'type',
-      ];
-      return this.reduceArrayKeys(allCards, keysToKeep);
-    },
     manageIntervals(idx, start) {
       if (start) {
         this.interlvals[`${idx}_s`] = setInterval(() => {
@@ -145,7 +137,15 @@ export default {
       clearInterval(this.interlvals[`${idx}_s`]);
       clearInterval(this.interlvals[`${idx}_ms`]);
     },
-    async asyncContructionApi(idx) {
+    reduceCards(allCards) {
+      const keysToKeep = [
+        'artist',
+        'name',
+        'type',
+      ];
+      return this.reduceArrayKeys(allCards, keysToKeep);
+    },
+    async asyncContruction(idx) {
       this.cardsList[idx].loading = true;
       this.manageIntervals(idx, true);
       try {
@@ -158,14 +158,14 @@ export default {
         this.manageIntervals(idx);
       }
     },
-    callBackContructionApi(idx, cb) {
+    callBackContruction(idx, cb) {
       this.cardsList[idx].loading = true;
       this.manageIntervals(idx, true);
       getAllCards()
         .then((res) => {
           this.cardsList[idx].loading = false;
           this.manageIntervals(idx);
-          cb(null, { res, idx });
+          cb(null, { allCards: res, idx });
         })
         .catch((err) => {
           this.cardsList[idx].loading = false;
@@ -175,12 +175,12 @@ export default {
     },
     getResults(error, res) {
       if (error) return;
+      const { allCards } = res;
       const { idx } = res;
-      const allCards = res.res;
       this.cardsList[idx].loading = false;
       this.cardsList[idx].items = this.reduceCards(allCards);
     },
-    promiseContructionApi(idx) {
+    promiseContruction(idx) {
       this.cardsList[idx].loading = true;
       this.manageIntervals(idx, true);
       return new Promise((resolve, reject) => {
