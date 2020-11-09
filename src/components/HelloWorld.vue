@@ -77,9 +77,9 @@ export default {
   name: 'HelloWorld',
   created() {
     this.functionsList.push(
-      { fn: (idx) => this.asyncContructionApi(idx), label: async },
-      { fn: (idx) => this.callBackContructionApi(idx, this.getResults), label: callBack },
-      { fn: (idx) => this.promiseContructionApi(idx), label: promise },
+      { fn: (idx) => this.asyncContruction(idx), label: async },
+      { fn: (idx) => this.callBackContruction(idx, this.getResults), label: callBack },
+      { fn: (idx) => this.promiseContruction(idx), label: promise },
     );
   },
   data() {
@@ -114,6 +114,7 @@ export default {
         },
       ],
       functionsList: [],
+      interlvals: {},
     };
   },
   methods: {
@@ -123,6 +124,20 @@ export default {
       this.cardsList[idx].seconds = 0;
       this.cardsList[idx].miliseconds = 0;
     },
+    manageIntervals(idx, start) {
+      if (start) {
+        this.interlvals[`${idx}_s`] = setInterval(() => {
+          this.cardsList[idx].seconds += 1;
+          this.cardsList[idx].miliseconds = 0;
+        }, 1000);
+        this.interlvals[`${idx}_ms`] = setInterval(() => {
+          this.cardsList[idx].miliseconds += 1;
+        }, 1);
+        return;
+      }
+      clearInterval(this.interlvals[`${idx}_s`]);
+      clearInterval(this.interlvals[`${idx}_ms`]);
+    },
     reduceCards(allCards) {
       const keysToKeep = [
         'artist',
@@ -131,76 +146,55 @@ export default {
       ];
       return this.reduceArrayKeys(allCards, keysToKeep);
     },
-    async asyncContructionApi(idx) {
+    async asyncContruction(idx) {
       this.cardsList[idx].loading = true;
-      const secInterval = setInterval(() => {
-        this.cardsList[idx].seconds += 1;
-      }, 1000);
-      const miliInterval = setInterval(() => {
-        this.cardsList[idx].miliseconds += 1;
-      }, 1);
+      this.manageIntervals(idx, true);
       try {
         const allCards = await getAllCards();
         this.cardsList[idx].loading = false;
         this.cardsList[idx].items = this.reduceCards(allCards);
-        clearInterval(secInterval);
-        clearInterval(miliInterval);
+        this.manageIntervals(idx);
       } catch (err) {
         this.cardsList[idx].loading = false;
-        clearInterval(secInterval);
-        clearInterval(miliInterval);
+        this.manageIntervals(idx);
       }
     },
-    callBackContructionApi(idx, cb) {
+    callBackContruction(idx, cb) {
       this.cardsList[idx].loading = true;
-      const secInterval = setInterval(() => {
-        this.cardsList[idx].seconds += 1;
-      }, 1000);
-      const miliInterval = setInterval(() => {
-        this.cardsList[idx].miliseconds += 1;
-      }, 1);
+      this.manageIntervals(idx, true);
       getAllCards()
         .then((res) => {
           this.cardsList[idx].loading = false;
-          clearInterval(secInterval);
-          clearInterval(miliInterval);
-          cb(null, { res, idx });
+          this.manageIntervals(idx);
+          cb(null, { allCards: res, idx });
         })
         .catch((err) => {
           this.cardsList[idx].loading = false;
-          clearInterval(secInterval);
-          clearInterval(miliInterval);
+          this.manageIntervals(idx);
           cb(err);
         });
     },
     getResults(error, res) {
       if (error) return;
+      const { allCards } = res;
       const { idx } = res;
-      const allCards = res.res;
       this.cardsList[idx].loading = false;
       this.cardsList[idx].items = this.reduceCards(allCards);
     },
-    promiseContructionApi(idx) {
+    promiseContruction(idx) {
       this.cardsList[idx].loading = true;
-      const secInterval = setInterval(() => {
-        this.cardsList[idx].seconds += 1;
-      }, 1000);
-      const miliInterval = setInterval(() => {
-        this.cardsList[idx].miliseconds += 1;
-      }, 1);
+      this.manageIntervals(idx, true);
       return new Promise((resolve, reject) => {
         getAllCards()
           .then((res) => {
             const allCards = res;
             this.cardsList[idx].loading = false;
             this.cardsList[idx].items = this.reduceCards(allCards);
-            clearInterval(secInterval);
-            clearInterval(miliInterval);
+            this.manageIntervals(idx);
             resolve(res);
           })
           .catch((err) => {
-            clearInterval(secInterval);
-            clearInterval(miliInterval);
+            this.manageIntervals(idx);
             reject(err);
           });
       });
