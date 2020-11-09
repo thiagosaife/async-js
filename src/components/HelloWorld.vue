@@ -128,6 +128,7 @@ export default {
       if (start) {
         this.interlvals[`${idx}_s`] = setInterval(() => {
           this.cardsList[idx].seconds += 1;
+          this.cardsList[idx].miliseconds = 0;
         }, 1000);
         this.interlvals[`${idx}_ms`] = setInterval(() => {
           this.cardsList[idx].miliseconds += 1;
