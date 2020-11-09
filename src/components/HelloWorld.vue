@@ -147,6 +147,8 @@ export default {
       return this.reduceArrayKeys(allCards, keysToKeep);
     },
     async asyncContruction(idx) {
+      if (this.cardsList[idx].loading) return;
+      if (this.cardsList[idx].items.length) this.clearList(idx);
       this.cardsList[idx].loading = true;
       this.manageIntervals(idx, true);
       try {
@@ -160,6 +162,8 @@ export default {
       }
     },
     callBackContruction(idx, cb) {
+      if (this.cardsList[idx].loading) return;
+      if (this.cardsList[idx].items.length) this.clearList(idx);
       this.cardsList[idx].loading = true;
       this.manageIntervals(idx, true);
       getAllCards()
@@ -182,6 +186,8 @@ export default {
       this.cardsList[idx].items = this.reduceCards(allCards);
     },
     promiseContruction(idx) {
+      if (this.cardsList[idx].loading) return false;
+      if (this.cardsList[idx].items.length) this.clearList(idx);
       this.cardsList[idx].loading = true;
       this.manageIntervals(idx, true);
       return new Promise((resolve, reject) => {
