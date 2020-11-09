@@ -77,9 +77,9 @@ export default {
   name: 'HelloWorld',
   created() {
     this.functionsList.push(
-      { fn: (idx) => this.asyncContruction(idx), label: async },
-      { fn: (idx) => this.callBackContruction(idx, this.getResults), label: callBack },
-      { fn: (idx) => this.promiseContruction(idx), label: promise },
+      { fn: (idx) => this.asyncConstruction(idx), label: async },
+      { fn: (idx) => this.callBackConstruction(idx, this.getResults), label: callBack },
+      { fn: (idx) => this.promiseConstruction(idx), label: promise },
     );
   },
   data() {
@@ -146,7 +146,7 @@ export default {
       ];
       return this.reduceArrayKeys(allCards, keysToKeep);
     },
-    async asyncContruction(idx) {
+    async asyncConstruction(idx) {
       if (this.cardsList[idx].loading) return;
       if (this.cardsList[idx].items.length) this.clearList(idx);
       this.cardsList[idx].loading = true;
@@ -161,7 +161,7 @@ export default {
         this.manageIntervals(idx);
       }
     },
-    callBackContruction(idx, cb) {
+    callBackConstruction(idx, cb) {
       if (this.cardsList[idx].loading) return;
       if (this.cardsList[idx].items.length) this.clearList(idx);
       this.cardsList[idx].loading = true;
@@ -185,7 +185,7 @@ export default {
       this.cardsList[idx].loading = false;
       this.cardsList[idx].items = this.reduceCards(allCards);
     },
-    promiseContruction(idx) {
+    promiseConstruction(idx) {
       if (this.cardsList[idx].loading) return false;
       if (this.cardsList[idx].items.length) this.clearList(idx);
       this.cardsList[idx].loading = true;
