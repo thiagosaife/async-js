@@ -13,6 +13,7 @@ Vue.use(BootstrapVueIcons);
 Vue.mixin({
   methods: {
     fixedDecimals(num) {
+      if (num < 10) return `0${num}`.substring(0, 2);
       return `${num}`.substring(0, 2);
     },
     reduceArrayKeys(originalArray, keysToKeep) {
